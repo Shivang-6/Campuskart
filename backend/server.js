@@ -56,19 +56,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 🔐 Session setup
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "supersecurekey123",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl:process.env.MONGO_URI }),
-    cookie: {
-      secure: false,
-      sameSite: 'none',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET || "supersecurekey123",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: {
+    secure: true,         // ✅ Use true for HTTPS (Vercel + Render are HTTPS)
+    sameSite: 'none',     // ✅ Required for cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
 
 // 🧠 Passport middlewares
 app.use(passport.initialize());
