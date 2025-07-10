@@ -12,9 +12,7 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 
 router.get("/google/callback",
     passport.authenticate("google", {
-      successRedirect: process.env.CLIENT_URL
-        ? process.env.CLIENT_URL.replace(/\/$/, '') + "/landing"
-        : "http://localhost:5173/landing",
+      successRedirect: 'https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app',
       failureRedirect: "/auth/login/failed"
     })
   );
