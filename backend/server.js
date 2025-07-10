@@ -21,7 +21,22 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
-app.use(cors())
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://campuskart-t11r-7hbhp7d5w-shivang-6s-projects.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to CampusKart API');
