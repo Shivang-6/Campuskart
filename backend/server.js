@@ -27,7 +27,6 @@ const allowedOrigins = [
   'https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app'
 ];
 
-
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -64,8 +63,8 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl:process.env.MONGO_URI }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: false,
+      sameSite: none,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
