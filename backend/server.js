@@ -44,7 +44,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "supersecurekey123",
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/campuskart' }),
+    store: MongoStore.create({ mongoUrl:process.env.MONGO_URI }),
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
