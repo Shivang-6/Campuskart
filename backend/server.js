@@ -23,8 +23,10 @@ const app = express();
 const server = createServer(app);
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://campuskart-t11r-7hbhp7d5w-shivang-6s-projects.vercel.app'
+  'https://campuskart-t11r-7hbhp7d5w-shivang-6s-projects.vercel.app',
+  'https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app'
 ];
+
 
 app.use(cors({
   origin: function (origin, callback) {
