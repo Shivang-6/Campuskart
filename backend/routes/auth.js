@@ -11,11 +11,12 @@ const router = express.Router();
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 router.get("/google/callback",
-    passport.authenticate("google", {
-      successRedirect: 'https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app',
-      failureRedirect: "/auth/login/failed"
-    })
-  );
+  passport.authenticate("google", {
+    successRedirect: "https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app",
+    failureRedirect: "/auth/login/failed"
+  })
+);
+
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
