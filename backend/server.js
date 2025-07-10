@@ -21,6 +21,7 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
+app.use(cors())
 
 app.get('/', (req, res) => {
   res.send('Welcome to CampusKart API');
@@ -57,26 +58,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 🌐 CORS setup
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173'];
 
-console.log('CORS allowed origins:', process.env.CLIENT_URL);
-
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log('CORS request from origin:', origin);
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.log('CORS blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
 
 // 🔗 Routes
 app.use("/auth", authRoutes);
