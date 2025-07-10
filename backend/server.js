@@ -21,22 +21,11 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://campuskart-t11r-7hbhp7d5w-shivang-6s-projects.vercel.app',
-  'https://campuskart-t11r-pb1ph3ney-shivang-6s-projects.vercel.app'
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true,
   credentials: true
 }));
+
 
 
 app.get('/', (req, res) => {
