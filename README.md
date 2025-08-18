@@ -1,6 +1,6 @@
 🛒 CampusKart
 
-CampusKart is a campus-focused e-commerce platform (similar to OLX, but for students) where students can buy, sell, and exchange items within their university community. From books and notes to gadgets and sports equipment, CampusKart provides a safe and simple way for students to trade on campus.
+CampusKart is a campus-focused e-commerce platform where students can buy, sell, and exchange items within their university community. From books and notes to gadgets and sports equipment, CampusKart provides a safe and simple way for students to trade on campus.
 
 🚀 Features
 
@@ -12,7 +12,7 @@ CampusKart is a campus-focused e-commerce platform (similar to OLX, but for stud
 
 🔍 Search & Filter – Easily find items by name, category, or price.
 
-💬 Messaging System (coming soon) – Chat between buyers & sellers.
+💬 Messaging System – Chat between buyers & sellers.
 
 🎓 Campus Verified – Transactions limited to students for safety.
 
@@ -24,13 +24,13 @@ Frontend: React.js, React Router, TailwindCSS
 
 Backend: Node.js, Express.js
 
-Database: MongoDB (Mongoose ODM)
+Database: MongoDB
 
 Authentication: JWT, Google OAuth, Passport.js
 
 File Uploads: Multer + Cloudinary
 
-Deployment: Vercel (Frontend), Render/Heroku (Backend)
+Deployment: Vercel (Frontend), Render(Backend)
 
 📦 Installation
 
@@ -64,10 +64,6 @@ npm run server
 Run the frontend:
 
 npm start
-
-🖼️ Screenshots
-
-(Add UI screenshots – Homepage, Product Listing, Login Page, etc.)
 
 📌 Usage
 
