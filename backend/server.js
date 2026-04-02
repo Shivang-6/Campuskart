@@ -1,26 +1,35 @@
-import express from 'express';
-import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 import session from 'express-session';
+import { createServer } from 'http';
+import mongoose from 'mongoose';
 import passport from 'passport';
-import productRoutes from "./routes/product.js";
+import { Server } from 'socket.io';
 import chatRoutes from "./routes/chat.js";
+import paymentRoutes from "./routes/payment.js";
+import productRoutes from "./routes/product.js";
 import profileRoutes from "./routes/profile.js";
 import transactionRoutes from "./routes/transactions.js";
-import paymentRoutes from "./routes/payment.js";
-import cors from 'cors';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import MongoStore from 'connect-mongo';
 
-import authRoutes from './routes/auth.js';
 import './auth/passport.js';
+import authRoutes from './routes/auth.js';
 import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
 
 const app = express();
 const server = createServer(app);
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
+
+
+// Trust proxy headers on Render so req.protocol resolves to https in production.
+app.set('trust proxy', 1);
 
 app.get('/', (req, res) => {
   res.send('Welcome to CampusKart API');
@@ -39,44 +48,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 🔐 Session setup
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "supersecurekey123",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/campuskart' }),
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET || "supersecurekey123",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: {
+    secure: true,         // ✅ Use true for HTTPS (Vercel + Render are HTTPS)
+    sameSite: 'none',     // ✅ Required for cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
 
 // 🧠 Passport middlewares
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 🌐 CORS setup
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173'];
 
-console.log('CORS allowed origins:', process.env.CLIENT_URL);
-
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log('CORS request from origin:', origin);
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.log('CORS blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
 
 // 🔗 Routes
 app.use("/auth", authRoutes);
@@ -88,7 +76,7 @@ app.use("/payment", paymentRoutes);
 app.use("/notifications", notificationRoutes);
 
 // 📦 MongoDB
-mongoose.connect('mongodb://localhost:27017/campuskart')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
