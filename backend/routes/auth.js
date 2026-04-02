@@ -50,7 +50,15 @@ router.get("/google/callback", (req, res, next) => {
         return res.redirect(failureRedirect);
       }
 
-      return res.redirect(successRedirect);
+      // Persist the session before redirect so the frontend can immediately
+      // read the logged-in user via /auth/login/success.
+      req.session.save((sessionErr) => {
+        if (sessionErr) {
+          console.error("Google OAuth session save error:", sessionErr);
+          return res.redirect(failureRedirect);
+        }
+        return res.redirect(successRedirect);
+      });
     });
   })(req, res, next);
 });
