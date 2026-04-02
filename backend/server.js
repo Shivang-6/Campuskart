@@ -22,7 +22,7 @@ dotenv.config();
 const app = express();
 const server = createServer(app);
 app.use(cors({
-  origin: true,
+  origin: process.env.CLIENT_URL,
   credentials: true
 }));
 
@@ -49,13 +49,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // 🔐 Session setup
 app.use(session({
-  secret: process.env.SESSION_SECRET || "supersecurekey123",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
   cookie: {
-    secure: true,         // ✅ Use true for HTTPS (Vercel + Render are HTTPS)
-    sameSite: 'none',     // ✅ Required for cross-site cookies
+    secure: true,
+    sameSite: 'none',
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
