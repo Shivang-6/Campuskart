@@ -1,9 +1,9 @@
+import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
 import express from "express";
 import passport from "passport";
-import bcrypt from "bcryptjs";
-import User from "../models/user.js";
 import Product from "../models/product.js";
-import dotenv from "dotenv";
+import User from "../models/user.js";
 dotenv.config();
 
 const router = express.Router();
@@ -25,13 +25,35 @@ router.get("/google", (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "https://campuskart-t11r-git-master-shivang-6s-projects.vercel.app/landing",
-    failureRedirect: "/auth/login/failed"
-  })
-);
+router.get("/google/callback", (req, res, next) => {
+  const successRedirect = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.replace(/\/$/, '') + "/landing"
+    : "http://localhost:5173/landing";
+  const failureRedirect = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.replace(/\/$/, '') + "/login?error=google_auth_failed"
+    : "http://localhost:5173/login?error=google_auth_failed";
 
+  passport.authenticate("google", (err, user, info) => {
+    if (err) {
+      console.error("Google OAuth callback error:", err);
+      return res.redirect(failureRedirect);
+    }
+
+    if (!user) {
+      console.warn("Google OAuth failed to return a user:", info);
+      return res.redirect(failureRedirect);
+    }
+
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        console.error("Google OAuth session login error:", loginErr);
+        return res.redirect(failureRedirect);
+      }
+
+      return res.redirect(successRedirect);
+    });
+  })(req, res, next);
+});
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
