@@ -15,7 +15,7 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.SERVER_URL ? `${process.env.SERVER_URL}/auth/google/callback` : "http://localhost:5000/auth/google/callback",
+        callbackURL:"https://campuskart-3mzw.onrender.com/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {

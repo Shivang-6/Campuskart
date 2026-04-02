@@ -21,6 +21,12 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
+
 
 // Trust proxy headers on Render so req.protocol resolves to https in production.
 app.set('trust proxy', 1);
@@ -42,44 +48,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 🔐 Session setup
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "supersecurekey123",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET || "supersecurekey123",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: {
+    secure: true,         // ✅ Use true for HTTPS (Vercel + Render are HTTPS)
+    sameSite: 'none',     // ✅ Required for cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
 
 // 🧠 Passport middlewares
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 🌐 CORS setup
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173'];
 
-console.log('CORS allowed origins:', process.env.CLIENT_URL);
-
-app.use(cors({
-  origin: function (origin, callback) {
-    console.log('CORS request from origin:', origin);
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.log('CORS blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
 
 // 🔗 Routes
 app.use("/auth", authRoutes);

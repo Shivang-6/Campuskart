@@ -26,17 +26,12 @@ router.get("/google", (req, res, next) => {
 });
 
 router.get("/google/callback",
-    (req, res, next) => {
-      const callbackURL = `${getServerBaseUrl(req)}/auth/google/callback`;
-      passport.authenticate("google", {
-        callbackURL,
-        successRedirect: process.env.CLIENT_URL
-          ? process.env.CLIENT_URL.replace(/\/$/, '') + "/landing"
-          : "http://localhost:5173/landing",
-        failureRedirect: "/auth/login/failed"
-      })(req, res, next);
-    }
-  );
+  passport.authenticate("google", {
+    successRedirect: "https://campuskart-t11r-git-master-shivang-6s-projects.vercel.app/landing",
+    failureRedirect: "/auth/login/failed"
+  })
+);
+
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
