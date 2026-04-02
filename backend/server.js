@@ -28,6 +28,9 @@ app.use(cors({
 
 
 
+// Trust proxy headers on Render so req.protocol resolves to https in production.
+app.set('trust proxy', 1);
+
 app.get('/', (req, res) => {
   res.send('Welcome to CampusKart API');
 });

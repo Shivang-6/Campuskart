@@ -8,7 +8,22 @@ dotenv.config();
 
 const router = express.Router();
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+const getServerBaseUrl = (req) => {
+  if (process.env.SERVER_URL) {
+    return process.env.SERVER_URL.replace(/\/$/, "");
+  }
+  const forwardedProto = req.get("x-forwarded-proto");
+  const protocol = (forwardedProto || req.protocol || "https").split(",")[0].trim();
+  return `${protocol}://${req.get("host")}`;
+};
+
+router.get("/google", (req, res, next) => {
+  const callbackURL = `${getServerBaseUrl(req)}/auth/google/callback`;
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    callbackURL,
+  })(req, res, next);
+});
 
 router.get("/google/callback",
   passport.authenticate("google", {
