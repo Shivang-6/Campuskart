@@ -1,20 +1,20 @@
-import express from 'express';
-import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
 import session from 'express-session';
+import { createServer } from 'http';
+import mongoose from 'mongoose';
 import passport from 'passport';
-import productRoutes from "./routes/product.js";
+import { Server } from 'socket.io';
 import chatRoutes from "./routes/chat.js";
+import paymentRoutes from "./routes/payment.js";
+import productRoutes from "./routes/product.js";
 import profileRoutes from "./routes/profile.js";
 import transactionRoutes from "./routes/transactions.js";
-import paymentRoutes from "./routes/payment.js";
-import cors from 'cors';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import MongoStore from 'connect-mongo';
 
-import authRoutes from './routes/auth.js';
 import './auth/passport.js';
+import authRoutes from './routes/auth.js';
 import notificationRoutes from './routes/notifications.js';
 
 dotenv.config();
